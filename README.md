@@ -19,7 +19,7 @@ $ npm install --global flores-create
 
 ## Usage
 
-```js
+```bash
 $ flores --help
 
   Usage
