@@ -1,15 +1,15 @@
-const cli = require("./cli");
 const isPathExists = require("./is-path-exists");
+const meow = require("./meow");
 const resolveStarterUrl = require("./resolve-starter-url");
 
 const SUPPORTED_PACKAGE_MANAGERS = ["npm", "yarn"];
 
 /**
- * Get CLI input.
+ * Get the CLI input.
  * @return {Object}
  */
-const input = async () => {
-  const { input, flags } = cli();
+const getInput = async () => {
+  const { input, flags } = meow();
 
   if (input.length === 0) {
     throw new Error("The <path> argument is missing.");
@@ -40,4 +40,4 @@ const input = async () => {
   };
 };
 
-module.exports = input;
+module.exports = getInput;

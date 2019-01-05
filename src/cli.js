@@ -1,47 +1,47 @@
-const meow = require("meow");
+/* eslint no-console: "off" */
+const redent = require("redent");
+
+const downloadStarter = require("./download-starter");
+const getInput = require("./get-input");
+const installDependencies = require("./install-dependencies");
 
 /**
- * Get CLI input.
- * @return {Object}
+ * Run the CLI app.
+ * @return {Promise}
  */
-const cli = () =>
-  meow(
-    `
-  Usage
-    $ flores-create <path> [--starter] [--package-manager]
+const cli = async () => {
+  const { path, starterUrl, packageManager } = await getInput();
 
-    - path: The path where you want to create the Flores website.
+  await downloadStarter({ url: starterUrl, destination: path });
 
-  Options
-    --starter, -s: The URL of Flores starter template to download.
+  console.log("✅ Starter template is downloaded.");
 
-    If not providied, it will use the default Flores starter template at:
-    "https://github.com/risan/flores-starter/archive/master.zip".
-    If it's a Github repository and you want to use the master branch, you
-    may provide a shorter value: "@risan/flores-starter". Note that you must
-    add "@" character in the front.
+  await installDependencies(path, packageManager);
 
-    --package-manager, -p: The package manager to use ("npm" or "yarn").
+  console.log("✅ Dependencies are installed.");
 
-  Examples
-    $ flores-create my-blog
-    $ flores-create my-blog --starter https://github.com/risan/flores-starter/archive/master.zip
-    $ flores-create my-blog -s @risan/flores-starter
-    $ flores-create my-blog --package-manager npm
-    $ flores-create my-blog -p yarn
-`,
-    {
-      flags: {
-        starter: {
-          type: "string",
-          alias: "s"
-        },
-        packageManager: {
-          type: "string",
-          alias: "p"
-        }
-      }
-    }
+  console.log(
+    redent(
+      `
+    🎉 You're all set!
+
+    Go to your project directory:
+      $ cd ${path}
+
+    Run the following command to generate the website:
+      $ npm run build
+
+    Run the following command to generate the website and preview it on the
+    built-in server:
+      $ npm run serve
+
+    Run the following command to automatically regenerate the website and
+    reload the browser upon file changes:
+      $ npm run watch
+  `,
+      2
+    )
   );
+};
 
 module.exports = cli;
